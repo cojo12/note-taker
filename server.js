@@ -10,3 +10,6 @@ app.use(express.static('./public'));
 require('./routes/api')(app);
 require('./routes/html')(app);
 
+app.listen(PORT, function() {
+  console.log('App listening on PORT; ' + PORT);
+});
