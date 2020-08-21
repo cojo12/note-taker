@@ -1,21 +1,16 @@
-const fs = require('fs');
-const {v4: uuidv4} = require('uuid');
-const util = require('util');
+const router = require("express").Router();
+const store = require("../db/store.js");
 
-const readFileAsync = util.promisify(fs.readFile);
-const writeFileAsync = util.promisify(fs.writeFile);
+router.get("/notes", function(req, res) {
+  store.getNotes().then(notes => res.json(notes))
+});
 
-module.exports = function (app) {
-  
-  app.get('/api/notes', function (req, res) {
-    readFileAsync('./db/db.json', 'utf8')
-    .then(function (notesData) {
-      var notes = JSON.parse(notesData)
-      res.json(notes);
-      console.log(notes);
-    })
-    .catch(function (err) {
-      console.log(err);
-    });
-  });
-}
+router.post("/notes", function (req, res) {
+  store.addNote(req.body).then(note => res.json(note))
+});
+
+router.delete("/notes/:id", function(req, res) {
+  store.removeNote(req.params.id).then(() => res.json({ok: true}))
+});
+
+module.exports = router;
